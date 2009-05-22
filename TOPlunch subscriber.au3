@@ -5,7 +5,7 @@
 ;Required for DateDiff
 #include <Date.au3>
 
-$programtitle="TOPlunch subscriber 1.0"
+$programtitle="TOPlunch subscriber 1.1"
 
 TraySetToolTip($programtitle)
 
@@ -15,7 +15,8 @@ If IniRead($inifile,"TOPlunch", "LastDecided","0") == _NowCalcDate() Then Exit ;
 
 If (@HOUR==11 AND @MIN>30) Or (@HOUR>11) Then Exit ; Don't do anything after 11:30
 
-$url = "http://intranet.topdesk.com/index.php?req=subscribeme2" ; The TOPlunch "subscribe me" URL (will auto login)
+; $url = "http://intranet.topdesk.com/index.php?req=subscribeme2" ; The TOPlunch Subscriber v1.0 "subscribe me" URL (will auto login)
+$url = "http://intranet.topdesk.com/index.php"
 $snoozeTime=15 ; Minutes to snooze
 dim $begin ; Global variable
 $snoozing=False; Global variable
@@ -35,8 +36,21 @@ While 1
         Case $msg = $GUI_EVENT_CLOSE
             ExitLoop
         Case $msg = $Button_YES
+			GUICtrlSetState($Button_YES,$GUI_DISABLE)
+			GUICtrlSetState($Button_NO,$GUI_DISABLE)
+			GUICtrlSetState($Button_SNOOZE,$GUI_DISABLE)
+			GUICtrlSetState($Button_NEVER,$GUI_DISABLE)
+			GUICtrlSetData ($Button_YES,"Subscribing....")
 			IniWrite ($inifile,"TOPlunch", "LastDecided", _NowCalcDate()) ; Remember when 'No' was decided to prevent repeating the question today
-            _IECreate($url,0,1,0,0) ; Open Intranet subscribtion page (don't attach to an existing window, show the browser, return immediatly and bring into focus)
+			
+            ; _IECreate($url,0,1,0,0) ; Open Intranet subscribtion page (don't attach to an existing window, show the browser, return immediatly and bring into focus)
+			; Line above was TOPlunch Subscriber v1.0 but then the intranet changed and required a POST as below
+			$oIE = _IECreate($url) ; Open Intranet subscribtion page (don't attach to an existing window, show the browser, wait for the page load to complete and DON'T bring into focus)
+			$oForm = _IEFormGetObjByName ($oIE, "subscribemeform")
+			$oQuery = _IEFormElementGetObjByName ($oForm, "req")
+			_IEFormElementSetValue ($oQuery, "subscribeme2")
+			_IEFormSubmit ($oForm)
+
 			Exit
         Case $msg = $Button_NO
 			IniWrite ($inifile,"TOPlunch", "LastDecided", _NowCalcDate()) ; Remember when 'No' was decided to prevent repeating the question today
