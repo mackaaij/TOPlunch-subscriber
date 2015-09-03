@@ -11,7 +11,7 @@
 #include <Inet.au3>
 #include <Array.au3>
 
-$programtitle="TOPlunch subscriber 1.1"
+$programtitle="TOPlunch subscriber 2.1"
 
 TraySetToolTip($programtitle)
 
@@ -26,8 +26,7 @@ If @HOUR > 11 then exit
 
 if StringInStr(@IPAddress1,"10.0.") <> 1 and StringInStr(@IPAddress2,"10.0.") <> 1 and StringInStr(@IPAddress3,"10.0.") <> 1 and stringInStr(@IPAddress4,"10.0.") <> 1 then Exit; do nothing when not in delft office
 
-$url = "http://intranet.topdesk.com/index.php?req=subscribeme2" ;
-$url2 = "http://intranet.topdesk.com"
+$url = "https://intranet-new.topdesk.com/subscribe.me.php" ; URL for Bitrix24
 $snoozeTime=15 ; Minutes to snooze
 dim $begin ; Global variable
 $snoozing=False; Global variable
@@ -53,7 +52,8 @@ While 1
 			GUICtrlSetState($Button_NEVER,$GUI_DISABLE)
 			GUICtrlSetData ($Button_YES,"Subscribing....")
 
-			$IECreate = _IECreate($url,0,0,1,0) ; Open Intranet subscribtion page (don't attach to an existing window, don't show the browser, return immediatly and bring into focus)
+			$IECreate = _IECreate($url,0,1,0,0) ; Open Intranet subscribtion page (don't attach to an existing window, do show the browser, don't wait for the page to load, don't take focus)
+            #comments-start
 			$Output = _INetGetSource($url2)
 			$FullName = GetFullName(@UserName)
 			$SPlittedName = StringSplit($FullName," ")
@@ -62,9 +62,12 @@ While 1
 			if StringInStr($Output,$SPlittedName[1],0,2) = 0 or StringInStr($Output,$SPlittedName[2],0,2) = 0  then
 			   MsgBox(0,"Error during subscription","Not possible to subscribe!" & @LF & "Please check your settings in Internet Explorer" & @LF & "This can be done by pressing ALT X ->" & @LF & "Internet Options -> Connections -> LAN Settings" & @LF & '"Automatically detect settings" should be ticked')
 			Else
+            #comments-end
 			   IniWrite ($inifile,"TOPlunch", "LastDecided", _NowCalcDate()) ; Remember when 'Yes' was decided to prevent repeating the question today
+            #comments-start
 			EndIf
 		 EndIf
+         #comments-end
 
 			Exit
         Case $msg = $Button_NO
@@ -125,4 +128,3 @@ Func GetFullName($sUserName)
        Return SetError(1,0,"")
     Endif
 EndFunc
-
