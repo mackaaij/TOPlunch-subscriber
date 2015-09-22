@@ -11,7 +11,7 @@
 #include <Inet.au3>
 #include <Array.au3>
 
-$programtitle="TOPlunch subscriber 2.1"
+$programtitle="TOPlunch subscriber 2.2"
 
 TraySetToolTip($programtitle)
 
@@ -26,7 +26,7 @@ If @HOUR > 11 then exit
 
 if StringInStr(@IPAddress1,"10.0.") <> 1 and StringInStr(@IPAddress2,"10.0.") <> 1 and StringInStr(@IPAddress3,"10.0.") <> 1 and stringInStr(@IPAddress4,"10.0.") <> 1 then Exit; do nothing when not in delft office
 
-$url = "https://intranet-new.topdesk.com/subscribe.me.php" ; URL for Bitrix24
+$url = "https://connect.topdesk.com/subscribe.me.php" ; URL for Bitrix24
 $snoozeTime=15 ; Minutes to snooze
 dim $begin ; Global variable
 $snoozing=False; Global variable
