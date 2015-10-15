@@ -11,7 +11,7 @@
 #include <Inet.au3>
 #include <Array.au3>
 
-$programtitle="TOPlunch subscriber 2.2"
+$programtitle="TOPlunch subscriber 2.3"
 
 TraySetToolTip($programtitle)
 
@@ -52,8 +52,9 @@ While 1
 			GUICtrlSetState($Button_NEVER,$GUI_DISABLE)
 			GUICtrlSetData ($Button_YES,"Subscribing....")
 
-			$IECreate = _IECreate($url,0,1,0,0) ; Open Intranet subscribtion page (don't attach to an existing window, do show the browser, don't wait for the page to load, don't take focus)
-            #comments-start
+			; $IECreate = _IECreate($url,0,1,0,0) ; Open Intranet subscription page (don't attach to an existing window, do show the browser, don't wait for the page to load, don't take focus)
+            ShellExecute($url) ; Open subscripbion page in default web browser
+			#comments-start
 			$Output = _INetGetSource($url2)
 			$FullName = GetFullName(@UserName)
 			$SPlittedName = StringSplit($FullName," ")
